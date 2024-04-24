@@ -28,6 +28,9 @@ import { SMARTY_TITAN_URL } from '../../../../configs';
 
 
 export async function GET(request: NextRequest) {
+    if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
