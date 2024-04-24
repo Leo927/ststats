@@ -24,7 +24,7 @@
  */
 import { sql } from '@vercel/postgres';
 import { NextResponse, NextRequest } from 'next/server';
-import { SMARTY_TITAN_URL } from '../../../../configs';
+import { SMARTY_TITAN_URL } from '@/configs';
 
 
 export async function GET(request: NextRequest) {
