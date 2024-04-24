@@ -1,0 +1,1 @@
+export const SMARTY_TITAN_URL = `https://smartytitans.com`;
