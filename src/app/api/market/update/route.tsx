@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
         const data = (await response.json())['data'];
 
         const query = `
+DELETE from MARKET;
 INSERT INTO MARKET (
 id,
 tType,
