@@ -17,10 +17,10 @@ export async function GET(request: NextRequest) {
          * 
          * */
         const query = sql`SELECT * FROM (
-            SELECT DISTINCT ON (uid, tag1) tier, uid, tag1, gemsPrice, goldPrice, max_ratio_per_tier
+            SELECT DISTINCT ON (uid, tag1) tier, uid, tag1, gemsPrice, goldPrice, ratio
             FROM (
                 SELECT o.uid, o.tag1, o.gemsPrice, r.goldPrice, o.tier,
-                       MAX(r.goldPrice / o.gemsPrice) OVER (PARTITION BY o.tier) AS max_ratio_per_tier
+                       MAX(r.goldPrice / o.gemsPrice) OVER (PARTITION BY o.tier) AS ratio
                 FROM (
                     SELECT uid, tag1, gemsPrice, tier
                     FROM Market
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
                     WHERE tType='r' AND goldPrice >0
                 ) AS r ON o.uid = r.uid AND o.tag1 = r.tag1
             ) AS data
-            WHERE goldPrice / gemsPrice = max_ratio_per_tier) 
+            WHERE goldPrice / gemsPrice = ratio) 
             ORDER BY tier ;                
         `;
         const data = await query;

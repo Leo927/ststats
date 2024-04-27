@@ -9,7 +9,7 @@ export default function GemToGoldCard(props: any, index: number) {
                 request <Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} /> {props.item.goldprice}
 
                 <Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gold Icon" width={25} height={25} />
-                {props.item.max_ratio_per_tier}
+                {props.item.ratio}
             </div>
         </div>
     );
