@@ -28,9 +28,6 @@ import { SMARTY_TITAN_URL } from '@/configs';
 
 
 export async function GET(request: NextRequest) {
-    if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
@@ -40,8 +37,7 @@ export async function GET(request: NextRequest) {
         const data = (await response.json())['data'];
 
         const query = `
-DELETE from MARKET;
-INSERT INTO MARKET (
+INSERT INTO Market (
 id,
 tType,
 uid,
@@ -62,6 +58,7 @@ updatedAt
 )
 VALUES ${data.map((i: any) => formatRow(i))};
 `.replaceAll('\n', '');
+        sql.query("DELETE FROM Market;");
         const result = sql.query(query);
         return NextResponse.json({ result }, { status: 200 });
     } catch (error) {
@@ -93,7 +90,7 @@ function formatRow(data: any) {
 
 function create_db() {
     return sql`
-CREATE TABLE IF NOT EXISTS MARKET (
+CREATE TABLE IF NOT EXISTS Market (
 id VARCHAR PRIMARY KEY NOT NULL,
 tType VARCHAR,
 uid VARCHAR NOT NULL,
