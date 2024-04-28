@@ -9,7 +9,7 @@ import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
 
-function renderItem(uidWithTag1: { uid: string, tag1: string }) {
+function renderItem(uidWithTag1: { uid: string, tag1: string; }) {
   let color = "";
   if (uidWithTag1.tag1 === null) {
     color = "white";
@@ -33,7 +33,8 @@ function renderItem(uidWithTag1: { uid: string, tag1: string }) {
 const columns: GridColDef[] = [
   { field: 'tier', headerName: 'Tier', width: 20 },
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
-  { field: 'gemsprice', headerName: 'Gems Price', width: 150, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
+  { field: 'type', headerName: 'Type', width: 130 },
+  { field: 'gemsprice', headerName: 'Gems Price', width: 50, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
   { field: 'goldprice', headerName: 'Gold Price', width: 150, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
   { field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
 ];
@@ -44,7 +45,7 @@ export default function Home() {
 
   function getQualities(data: any) {
     return data.map((item: any) => {
-      item.quality = item.tag1 == null ? "Common" : item.tag1
+      item.quality = item.tag1 == null ? "Common" : item.tag1;
       item.quality = item.quality.charAt(0).toUpperCase() + item.quality.slice(1).toLowerCase();
       return item;
     });
@@ -54,7 +55,7 @@ export default function Home() {
     return data.map((item: any) => {
       item.uidTag1 = { uid: item.uid, tag1: item.tag1 };
       return item;
-    })
+    });
   }
 
   useEffect(() => {
