@@ -2,6 +2,15 @@
     height: 100vh
 }
 
+.outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #000; /* Adjust thickness and color as needed */
+  }
+
 .GeneralLoader_container__GwRfs {
     display: flex;
     flex-direction: column;

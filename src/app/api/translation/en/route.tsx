@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
         // do nothing if the most recent data is less than 5 minutes old
         // request from url and store in db
         const response = await fetch(url);
-        const data = (await response.json());
+        const data = (await response.json())['texts'];
 
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
