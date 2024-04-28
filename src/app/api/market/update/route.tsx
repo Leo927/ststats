@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         await create_db();
         // do nothing if the most recent data is less than 5 minutes old
         // request from url and store in db
-        const response = await fetch(url);
+        const response = await fetch(url, { next: { revalidate: 300 } });
         const data = (await response.json())['data'];
 
         const query = `
