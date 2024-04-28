@@ -1,7 +1,9 @@
 'use client';
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import GemToGoldCard from "@/components/gemtogoldcard";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import './globals.css';
+import { ThemeProvider } from '@mui/material/styles';
 
 export default function Home() {
   const [translation, setTranslation] = useState({});
@@ -19,9 +21,11 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      {gemToGold.map((item, index) => (
-        <GemToGoldCard key={index} item={item} />
-      ))}
+      <AppRouterCacheProvider>
+        {gemToGold.map((item, index) => (
+          <GemToGoldCard key={index} item={item} />
+        ))}
+      </AppRouterCacheProvider>
     </main>
   );
 }
