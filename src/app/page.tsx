@@ -35,8 +35,8 @@ const columns: GridColDef[] = [
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
   { field: 'type', headerName: 'Type', width: 130 },
   { field: 'gemsprice', headerName: 'Gems Price', width: 50, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
-  { field: 'goldprice', headerName: 'Gold Price', width: 150, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
-  { field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
+  { field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
+  { field: 'ratio', headerName: 'Ratio', width: 100, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
 ];
 
 
