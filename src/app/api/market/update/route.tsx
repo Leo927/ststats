@@ -32,7 +32,12 @@ export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
-
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new NextResponse('Unauthorized', {
+            status: 401,
+        });
+    }
+    
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
