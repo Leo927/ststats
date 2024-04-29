@@ -30,6 +30,8 @@ import { SMARTY_TITAN_URL } from '@/configs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
+
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -38,21 +40,31 @@ export async function GET(request: NextRequest) {
         });
     }
 
-    const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
-        return create_db().catch((error) => { console.log("Error while creating market table"); throw error; })
-            .then(() => sql.query("DELETE FROM Market;")).catch((error) => { console.log("Error while deleting from market"); throw error; })
-            .then(() => fetch(url)).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
-            .then((response) => response.json()).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
-            .then((data) => data['data']).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
-            .then(insertData).catch((error) => { console.log("Error while inserting into market"); throw error; })
-            .then(() => sql.query(`DROP table gemtogold;`)).catch((error) => { console.log("Error while deleting from gemtogold"); throw error; })
-            .catch((error) => { console.log(`Error while dropping gemtogold`); throw error; })
-            .then(() => updateGemToGold()).catch((error) => { console.log(`Error while upating gemtogold`); throw error; })
+        return create_db()
+            .then(deleteOldMarketData)
+            .then(fetchListingDatas)
+            .then(insertData)
+            .then(dropGemToGold)
+            .then(updateGemToGold)
             .then(() => NextResponse.json("Update Sucessful", { status: 200 }));
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });
     }
+}
+
+function dropGemToGold() {
+    return sql.query(`DROP table gemtogold;`).catch((error) => { console.log(`Error while dropping gemtogold`); throw error; });
+}
+
+function fetchListingDatas(): Response | PromiseLike<Response> {
+    return fetch(url).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
+        .then((response) => response.json()).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
+        .then((data) => data['data']).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; });
+}
+
+function deleteOldMarketData() {
+    return sql.query(`DELETE FROM Market;`).catch((error) => { console.log("Error while deleting from market"); throw error; });
 }
 
 function updateGemToGold() {
@@ -72,7 +84,7 @@ function updateGemToGold() {
                 LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
                 LEFT OUTER JOIN translation t ON CONCAT('ascension_upgrade_', i.type, '_00') = t.key
                 WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
-                ) WHERE rn = 1 ORDER BY tier);`);
+                ) WHERE rn = 1 ORDER BY tier);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
 }
 
 function insertData(data: any) {
@@ -98,7 +110,7 @@ function insertData(data: any) {
     )
     VALUES ${data.map((i: any) => formatRow(i))};
     `.replaceAll('\n', '');
-    return sql.query(query);
+    return sql.query(query).catch((error) => { console.log("Error while inserting into market"); throw error; });
 }
 
 function formatRow(data: any) {
@@ -144,5 +156,5 @@ requestCycleLast INT ,
 createdAt TIMESTAMP NOT NULL,
 updatedAt TIMESTAMP NOT NULL
 );
-`;
+`.catch((error) => { console.log("Error while creating market table"); throw error; });
 }
