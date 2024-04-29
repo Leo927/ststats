@@ -34,9 +34,9 @@ const columns: GridColDef[] = [
   { field: 'tier', headerName: 'Tier', width: 20 },
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
   { field: 'type', headerName: 'Type', width: 130 },
-  { field: 'gemsprice', headerName: 'Gems Price', width: 50, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
-  { field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
-  { field: 'ratio', headerName: 'Ratio', width: 100, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
+  { field: 'gemsprice', headerName: 'Gems Price', flex: 30, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
+  { field: 'goldprice', headerName: 'Gold Price', flex: 50, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
+  { field: 'ratio', headerName: 'Ratio', flex: 50, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
 ];
 
 
@@ -60,11 +60,6 @@ export default function Home() {
 
   useEffect(() => {
     fetch("/api/market/gemtogold")
-      .then((res) => res.json())
-      .then(getQualities)
-      .then(groupUidWithTag1)
-      .then((data) => setGemToGold(data));
-    fetch("/api/market/update").then(() => fetch("/api/market/gemtogold"))
       .then((res) => res.json())
       .then(getQualities)
       .then(groupUidWithTag1)
