@@ -27,10 +27,17 @@ import { NextResponse, NextRequest } from 'next/server';
 import { SMARTY_TITAN_URL } from '@/configs';
 
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new NextResponse('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
@@ -78,7 +85,7 @@ VALUES ${data.map((i: any) => formatRow(i))};
                 LEFT OUTER JOIN translation t ON CONCAT('ascension_upgrade_', i.type, '_00') = t.key
                 WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
                 ) WHERE rn = 1 ORDER BY tier);
-        )`)
+        )`);
         return NextResponse.json({ result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });

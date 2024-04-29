@@ -12,6 +12,13 @@ const endPoint = '/assets/gameData/texts_en.json';
 const url = SMARTY_TITAN_URL + endPoint;
 
 export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new NextResponse('Unauthorized', {
+            status: 401,
+        });
+    }
+
     return createItemInfoTable()
         .then(getData)
         .then(insertData)
