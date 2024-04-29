@@ -37,42 +37,27 @@ export async function GET(request: NextRequest) {
             status: 401,
         });
     }
-    
+
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
-        await create_db();
-        const response = await fetch(url).catch((error) => { throw error; });
-        const data = (await response.json())['data'];
-
-        const query = `
-INSERT INTO Market (
-id,
-tType,
-uid,
-tag1,
-tag2,
-tag3,
-goldQty,
-gemsQty,
-created,
-tier,
-"order",
-cityId,
-goldPrice,
-gemsPrice,
-requestCycleLast,
-createdAt,
-updatedAt
-)
-VALUES ${data.map((i: any) => formatRow(i))};
-`.replaceAll('\n', '');
-
-        return sql.query("DELETE FROM Market;").catch((error) => { console.log("Error while deleting from market"); throw error; })
-            .then(() => sql.query(query)).catch((error) => { console.log("Error while inserting into market"); throw error; })
+        return create_db().catch((error) => { console.log("Error while creating market table"); throw error; })
+            .then(() => sql.query("DELETE FROM Market;")).catch((error) => { console.log("Error while deleting from market"); throw error; })
+            .then(() => fetch(url)).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
+            .then((response) => response.json()).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
+            .then((data) => data['data']).catch((error) => { console.log("Error while trying to fetch marekt info"); throw error; })
+            .then(insertData).catch((error) => { console.log("Error while inserting into market"); throw error; })
             .then(() => sql.query(`DROP table gemtogold;`)).catch((error) => { console.log("Error while deleting from gemtogold"); throw error; })
             .catch((error) => { console.log(`Error while dropping gemtogold`); throw error; })
-            .then(() => sql.query(
-                `CREATE TABLE gemtogold AS (SELECT * FROM 
+            .then(() => updateGemToGold()).catch((error) => { console.log(`Error while upating gemtogold`); throw error; })
+            .then(() => NextResponse.json("Update Sucessful", { status: 200 }));
+    } catch (error) {
+        return NextResponse.json({ error }, { status: 500 });
+    }
+}
+
+function updateGemToGold() {
+    return sql.query(
+        `CREATE TABLE gemtogold AS (SELECT * FROM 
                 (SELECT DISTINCT ON (m.uid, m.tag1) 
                     m.tier, 
                     m.uid, 
@@ -87,11 +72,33 @@ VALUES ${data.map((i: any) => formatRow(i))};
                 LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
                 LEFT OUTER JOIN translation t ON CONCAT('ascension_upgrade_', i.type, '_00') = t.key
                 WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
-                ) WHERE rn = 1 ORDER BY tier);`)).catch((error) => { console.log(`Error while upating gemtogold`); throw error; })
-            .then(result => NextResponse.json("Update Sucessful", { status: 200 }));
-    } catch (error) {
-        return NextResponse.json({ error }, { status: 500 });
-    }
+                ) WHERE rn = 1 ORDER BY tier);`);
+}
+
+function insertData(data: any) {
+    const query = `
+    INSERT INTO Market (
+    id,
+    tType,
+    uid,
+    tag1,
+    tag2,
+    tag3,
+    goldQty,
+    gemsQty,
+    created,
+    tier,
+    "order",
+    cityId,
+    goldPrice,
+    gemsPrice,
+    requestCycleLast,
+    createdAt,
+    updatedAt
+    )
+    VALUES ${data.map((i: any) => formatRow(i))};
+    `.replaceAll('\n', '');
+    return sql.query(query);
 }
 
 function formatRow(data: any) {
