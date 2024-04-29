@@ -27,13 +27,14 @@ import { NextResponse, NextRequest } from 'next/server';
 import { SMARTY_TITAN_URL } from '@/configs';
 
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
-        // do nothing if the most recent data is less than 5 minutes old
-        // request from url and store in db
-        const response = await fetch(url, { next: { revalidate: 300 } });
+        const response = await fetch(url);
         const data = (await response.json())['data'];
 
         const query = `

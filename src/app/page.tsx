@@ -9,6 +9,10 @@ import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
 
+// force dynamic
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 function renderItem(uidWithTag1: { uid: string, tag1: string; }) {
   let color = "";
   if (uidWithTag1.tag1 === null) {
