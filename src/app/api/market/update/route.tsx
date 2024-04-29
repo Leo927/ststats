@@ -32,16 +32,11 @@ export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', {
-            status: 401,
-        });
-    }
 
     const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
     try {
         await create_db();
-        const response = await fetch(url);
+        const response = await fetch(url).catch((error) => { throw error; });
         const data = (await response.json())['data'];
 
         const query = `
@@ -66,10 +61,13 @@ updatedAt
 )
 VALUES ${data.map((i: any) => formatRow(i))};
 `.replaceAll('\n', '');
-        sql.query("DELETE FROM Market;");
-        const result = sql.query(query);
-        sql.query(`DROP TABLE gemtogold;
-            CREATE TABLE gemtogold (SELECT * FROM 
+
+        return sql.query("DELETE FROM Market;").catch((error) => { console.log("Error while deleting from market"); throw error; })
+            .then(() => sql.query(query)).catch((error) => { console.log("Error while inserting into market"); throw error; })
+            .then(() => sql.query(`DROP table gemtogold;`)).catch((error) => { console.log("Error while deleting from gemtogold"); throw error; })
+            .catch((error) => { console.log(`Error while dropping gemtogold`); throw error; })
+            .then(() => sql.query(
+                `CREATE TABLE gemtogold AS (SELECT * FROM 
                 (SELECT DISTINCT ON (m.uid, m.tag1) 
                     m.tier, 
                     m.uid, 
@@ -84,9 +82,8 @@ VALUES ${data.map((i: any) => formatRow(i))};
                 LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
                 LEFT OUTER JOIN translation t ON CONCAT('ascension_upgrade_', i.type, '_00') = t.key
                 WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
-                ) WHERE rn = 1 ORDER BY tier);
-        )`);
-        return NextResponse.json({ result }, { status: 200 });
+                ) WHERE rn = 1 ORDER BY tier);`)).catch((error) => { console.log(`Error while upating gemtogold`); throw error; })
+            .then(result => NextResponse.json("Update Sucessful", { status: 200 }));
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });
     }
