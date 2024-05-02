@@ -8,7 +8,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
-import TypoGraphy from '@mui/material/Typography';
+import Link from 'next/link';
 
 // force dynamic
 export const dynamic = 'force-dynamic';
@@ -28,19 +28,22 @@ function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
     color = "gold";
   }
   const tier = uidWithTag1.tier;
+  const uid = uidWithTag1.uid;
   return (
-    <div style={{ overflow: 'hidden', backgroundColor: color }} className="relative">
-      <Image className="relative h-full w-full left-0 top-0" src={`https://playshoptitans.com/_next/image?url=%2Fassets%2Fitems%2F${uidWithTag1.uid}.png&w=100&q=100`} alt={uidWithTag1.uid} width={100} height={100} />
-      <div className={styles.BlueprintCard_specialAttributes___8e1A}>
-        <div className={styles.CardAttribute_attributeImage__rzy9Z}>
-          <div className={styles.CardAttribute_attributeImage__rzy9Z} title="">
-            <Image alt="" src="/assets/Misc Icons/icon_global_level_item_s_r.png" width="25" height="25" decoding="async" data-nimg="1" loading="lazy" />
-          </div>
-          <div className={styles.CardAttribute_tierValue__FHWkO}>{tier}
+    <Link href={`https://playshoptitans.com/blueprints/armor/ah/${uid}`}>
+      <div style={{ overflow: 'hidden', backgroundColor: color }} className="relative">
+        <Image className="relative h-full w-full left-0 top-0" src={`https://playshoptitans.com/_next/image?url=%2Fassets%2Fitems%2F${uid}.png&w=100&q=100`} alt={uid} width={100} height={100} />
+        <div className={styles.BlueprintCard_specialAttributes___8e1A}>
+          <div className={styles.CardAttribute_attributeImage__rzy9Z}>
+            <div className={styles.CardAttribute_attributeImage__rzy9Z} title="">
+              <Image alt="" src="/assets/Misc Icons/icon_global_level_item_s_r.png" width="25" height="25" decoding="async" data-nimg="1" loading="lazy" />
+            </div>
+            <div className={styles.CardAttribute_tierValue__FHWkO}>{tier}
+            </div>
           </div>
         </div>
-      </div>
-    </div >
+      </div >
+    </Link>
   );
 }
 
