@@ -76,18 +76,18 @@ const columns: GridColDef[] = [
     field: 'gemsprice', headerName: 'Gems Price', width: 100,
     renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />),
     renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
-      <TypoGraph>{params.value}</TypoGraph></div>)
+      <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>)
   },
   {
     field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />)
     , renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />
-      <TypoGraph>{params.value}</TypoGraph></div>),
+      <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>),
   },
   {
     field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
     </div>)
     , renderCell: (params) => (<div className="flex justify-center align-middle">
-      <TypoGraph className="h-full">{params.value}</TypoGraph></div>),
+      <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>),
 
   },
 ];
