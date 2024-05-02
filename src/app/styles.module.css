@@ -8,8 +8,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: 2px solid #000; /* Adjust thickness and color as needed */
-  }
+    border: 2px solid #000;
+    /* Adjust thickness and color as needed */
+}
 
 .GeneralLoader_container__GwRfs {
     display: flex;
@@ -2057,16 +2058,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 50px;
+    width: 20px;
+    height: 20px;
     animation: fade-in .2s ease-in-out
 }
 
 .CardAttribute_attributeImage__rzy9Z:after {
     position: absolute;
     content: "";
-    top: 0;
-    left: 0;
+    top: 10;
+    left: 10;
     right: 0;
     bottom: 0;
     width: 100%;
@@ -2091,13 +2092,14 @@
 .CardAttribute_tierValue__FHWkO {
     position: absolute;
     top: 0;
-    right: 1.5px;
+    right: 0px;
     bottom: 0;
     left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.75rem;
+    font-size: 1.0rem;
+    color: antiquewhite;
     text-shadow: var(--text-stroke)
 }
 
@@ -2679,7 +2681,7 @@
 
 .BlueprintCard_specialAttributes___8e1A {
     position: absolute;
-    top: -10px;
+    top: 0px;
     left: 0;
     display: flex;
     flex-direction: column;

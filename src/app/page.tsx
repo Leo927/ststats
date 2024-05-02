@@ -8,12 +8,13 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
+import TypoGraphy from '@mui/material/Typography';
 
 // force dynamic
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-function renderItem(uidWithTag1: { uid: string, tag1: string; }) {
+function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
   let color = "";
   if (uidWithTag1.tag1 === null) {
     color = "white";
@@ -26,16 +27,24 @@ function renderItem(uidWithTag1: { uid: string, tag1: string; }) {
   } else if (uidWithTag1.tag1 === "legendary") {
     color = "gold";
   }
+  const tier = uidWithTag1.tier;
   return (
-    <div style={{ borderRadius: '5px', overflow: 'hidden', backgroundColor: color }}>
-      <Image src={`https://playshoptitans.com/_next/image?url=%2Fassets%2Fitems%2F${uidWithTag1.uid}.png&w=100&q=100`} alt={uidWithTag1.uid} width={50} height={50} />
-      <div className={styles.outline}></div>
-    </div>
+    <div style={{ overflow: 'hidden', backgroundColor: color }} className="relative">
+      <Image className="relative h-full w-full left-0 top-0" src={`https://playshoptitans.com/_next/image?url=%2Fassets%2Fitems%2F${uidWithTag1.uid}.png&w=100&q=100`} alt={uidWithTag1.uid} width={100} height={100} />
+      <div className={styles.BlueprintCard_specialAttributes___8e1A}>
+        <div className={styles.CardAttribute_attributeImage__rzy9Z}>
+          <div className={styles.CardAttribute_attributeImage__rzy9Z} title="">
+            <Image alt="" src="/assets/Misc Icons/icon_global_level_item_s_r.png" width="25" height="25" decoding="async" data-nimg="1" loading="lazy" />
+          </div>
+          <div className={styles.CardAttribute_tierValue__FHWkO}>{tier}
+          </div>
+        </div>
+      </div>
+    </div >
   );
 }
 
 const columns: GridColDef[] = [
-  { field: 'tier', headerName: 'Tier', width: 50 },
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
   { field: 'type', headerName: 'Type', width: 130 },
   { field: 'gemsprice', headerName: 'Gems Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
@@ -57,7 +66,7 @@ export default function Home() {
 
   function groupUidWithTag1(data: any) {
     return data.map((item: any) => {
-      item.uidTag1 = { uid: item.uid, tag1: item.tag1 };
+      item.uidTag1 = { uid: item.uid, tag1: item.tag1, tier: item.tier };
       return item;
     });
   }
