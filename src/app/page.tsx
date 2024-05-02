@@ -9,6 +9,7 @@ import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
 import Link from 'next/link';
+import TypoGraph from '@mui/material/Typography';
 
 // force dynamic
 export const dynamic = 'force-dynamic';
@@ -71,9 +72,24 @@ function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number, type
 
 const columns: GridColDef[] = [
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
-  { field: 'gemsprice', headerName: 'Gems Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
-  { field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
-  { field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
+  {
+    field: 'gemsprice', headerName: 'Gems Price', width: 100,
+    renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />),
+    renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
+      <TypoGraph>{params.value}</TypoGraph></div>)
+  },
+  {
+    field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />)
+    , renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />
+      <TypoGraph>{params.value}</TypoGraph></div>),
+  },
+  {
+    field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
+    </div>)
+    , renderCell: (params) => (<div className="flex justify-center align-middle">
+      <TypoGraph className="h-full">{params.value}</TypoGraph></div>),
+
+  },
 ];
 
 
