@@ -2005,8 +2005,9 @@
 }
 
 .CardBanner_contentImage__cSHIF {
-    display: inline-block;
-    margin-right: 2.5px;
+    position:relative;
+    left: 0px;
+    top: -2px;
     filter: var(--drop-shadow-1)
 }
 
@@ -2682,7 +2683,16 @@
 .BlueprintCard_specialAttributes___8e1A {
     position: absolute;
     top: 0px;
-    left: 0;
+    left: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.BlueprintCard_itemtype {
+    position: absolute;
+    top: 0px;
+    right: 0px;
     display: flex;
     flex-direction: column;
     gap: 5px

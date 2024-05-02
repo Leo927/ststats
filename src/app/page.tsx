@@ -14,7 +14,7 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
+function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number, type: string; }) {
   let color = "";
   if (uidWithTag1.tag1 === null) {
     color = "white";
@@ -29,6 +29,8 @@ function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
   }
   const tier = uidWithTag1.tier;
   const uid = uidWithTag1.uid;
+  const type = uidWithTag1.type;
+  console.log(type);
   return (
     <Link href={`https://playshoptitans.com/blueprints/armor/ah/${uid}`}>
       <div style={{ overflow: 'hidden', backgroundColor: color }} className="relative">
@@ -42,6 +44,26 @@ function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
             </div>
           </div>
         </div>
+
+        <div className={styles.BlueprintCard_itemtype}>
+          <div className={styles.CardAttribute_attributeImage__rzy9Z}>
+
+            <div className={styles.CardAttribute_attributeImage__rzy9Z} title="">
+              <Image alt="" src="/assets/Misc Icons/icon_global_level_item_s_r.png" width="25" height="25" decoding="async" data-nimg="1" loading="lazy" />
+            </div>
+          </div>
+
+          <div className={styles.BlueprintCard_itemtype}>
+
+            <div className={`${styles.CardAttribute_attributeImage__rzy9Z}`}>
+
+              <div className={styles.CardBanner_contentImage__cSHIF} title="">
+                <Image color="black" alt="" src={`https://playshoptitans.com/_next/image?url=%2Fassets%2Fui%2Ftypes%2Ficon_global_item_${type}.png&w=25&q=100`} width="25" height="25" decoding="async" data-nimg="1" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div >
     </Link>
   );
@@ -49,7 +71,6 @@ function renderItem(uidWithTag1: { uid: string, tag1: string, tier: number; }) {
 
 const columns: GridColDef[] = [
   { field: 'uidTag1', headerName: 'Item', width: 70, renderCell: (params) => (renderItem(params.value)) },
-  { field: 'type', headerName: 'Type', width: 130 },
   { field: 'gemsprice', headerName: 'Gems Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />) },
   { field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />) },
   { field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} /> </div>) },
@@ -69,7 +90,7 @@ export default function Home() {
 
   function groupUidWithTag1(data: any) {
     return data.map((item: any) => {
-      item.uidTag1 = { uid: item.uid, tag1: item.tag1, tier: item.tier };
+      item.uidTag1 = { uid: item.uid, tag1: item.tag1, tier: item.tier, type: item.longname };
       return item;
     });
   }
