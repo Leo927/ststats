@@ -70,21 +70,23 @@ function deleteOldMarketData() {
 function updateGemToGold() {
     return sql.query(
         `CREATE TABLE gemtogold AS (SELECT * FROM 
-                (SELECT DISTINCT ON (m.uid, m.tag1) 
-                    m.tier, 
-                    m.uid, 
-                    m.tag1, 
-                    m.gemsPrice, 
-                    r.goldPrice, 
-                    (r.goldPrice / m.gemsPrice)  AS ratio,
-                    rank() over (partition by m.tier order by r.goldPrice / m.gemsPrice desc) rn,
-                    REPLACE(t.value, ' Dabbler', '') AS type
-                FROM Market m
-                LEFT OUTER JOIN Market r ON m.uid = r.uid AND m.tag1 = r.tag1 AND r.tType = 'r' AND r.goldPrice > 0
-                LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
-                LEFT OUTER JOIN translation t ON CONCAT('ascension_upgrade_', i.type, '_00') = t.key
-                WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
-                ) WHERE rn = 1 ORDER BY tier);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
+            (SELECT DISTINCT ON (m.uid, m.tag1) 
+                m.tier, 
+                m.uid, 
+                m.tag1, 
+                m.gemsPrice, 
+                r.goldPrice, 
+                longname,
+                (r.goldPrice / m.gemsPrice)  AS ratio,
+                rank() over (partition by m.tier order by r.goldPrice / m.gemsPrice desc) rn,
+                t.value as displayname
+            FROM Market m
+            LEFT OUTER JOIN Market r ON m.uid = r.uid AND m.tag1 = r.tag1 AND r.tType = 'r' AND r.goldPrice > 0
+            LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
+            LEFT OUTER JOIN typeinfos ON i.type = typeinfos.shortname
+            LEFT OUTER JOIN translation t ON CONCAT('item_type_', typeinfos.longname) = t.key
+            WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
+            ) WHERE rn = 1 ORDER BY tier);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
 }
 
 function insertData(data: any) {
