@@ -47,6 +47,8 @@ export async function GET(request: NextRequest) {
             .then(insertData)
             .then(dropGemToGold)
             .then(updateGemToGold)
+            .then(dropGoldToGem)
+            .then(updateGoldToGem)
             .then(() => NextResponse.json("Update Sucessful", { status: 200 }));
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });
@@ -88,6 +90,34 @@ function updateGemToGold() {
             WHERE m.tType = 'o' AND m.gemsPrice > 0 AND r.goldPrice > 0
             ) WHERE rn = 1 ORDER BY tier);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
 }
+
+function dropGoldToGem() {
+    return sql.query(`DROP table goldtogem;`).catch((error) => { console.log(`Error while dropping goldToGem`); throw error; });
+}
+
+function updateGoldToGem() {
+    return sql.query(
+        `CREATE TABLE goldtogem AS (SELECT * FROM 
+            (SELECT DISTINCT ON (m.uid, m.tag1) 
+                m.tier, 
+                m.uid, 
+                m.tag1, 
+                m.goldPrice, 
+                r.gemsPrice, 
+                longname,
+                (m.goldPrice / r.gemsPrice )  AS ratio,
+                rank() over (partition by m.tier order by r.gemsPrice / m.goldPrice desc) rn,
+                t.value as displayname
+            FROM Market m
+            LEFT OUTER JOIN Market r ON m.uid = r.uid AND m.tag1 = r.tag1 AND r.tType = 'r' AND r.gemsPrice > 0
+            LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
+            LEFT OUTER JOIN typeinfos ON i.type = typeinfos.shortname
+            LEFT OUTER JOIN translation t ON CONCAT('item_type_', typeinfos.longname) = t.key
+            WHERE m.tType = 'o' AND m.goldPrice > 0 AND r.gemsPrice > 0
+            ) WHERE rn = 1 ORDER BY ratio);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
+}
+
+
 
 function insertData(data: any) {
     const query = `
