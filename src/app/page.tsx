@@ -1,15 +1,27 @@
 'use client';
 import { useState, useEffect } from "react";
-import GemToGoldCard from "@/components/gemtogoldcard";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import './globals.css';
-import { ThemeProvider } from '@mui/material/styles';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { The_Nautigal } from "next/font/google";
 import Image from 'next/image';
 import styles from '@/app/styles.module.css';
 import Link from 'next/link';
 import TypoGraph from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { GoldIcon, GemIcon } from "@/components/icons";
+
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import AdbIcon from '@mui/icons-material/Adb';
 
 // force dynamic
 export const dynamic = 'force-dynamic';
@@ -75,16 +87,16 @@ const columns: GridColDef[] = [
   {
     field: 'gemsprice', headerName: 'Gems Price', width: 100,
     renderHeader: () => (<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />),
-    renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
+    renderCell: (params) => (<div className="flex justify-center align-middle"> <GemIcon />
       <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>)
   },
   {
-    field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />)
-    , renderCell: (params) => (<div className="flex justify-center align-middle"> <Image className="w-5 h-5" src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />
+    field: 'goldprice', headerName: 'Gold Price', width: 100, renderHeader: () => (<GoldIcon />)
+    , renderCell: (params) => (<div className="flex justify-center align-middle"> <GoldIcon />
       <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>),
   },
   {
-    field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><Image src="/assets/Currencies/icon_global_gold.png" alt="Gold Icon" width={25} height={25} />/<Image src="/assets/Currencies/icon_global_gem.png" alt="Gem Icon" width={25} height={25} />
+    field: 'ratio', headerName: 'Ratio', width: 150, renderHeader: () => (<div className="flex"><GoldIcon />/<GemIcon />
     </div>)
     , renderCell: (params) => (<div className="flex justify-center align-middle">
       <TypoGraph className="dark:text-white">{params.value}</TypoGraph></div>),
@@ -119,13 +131,55 @@ export default function Home() {
       .then((data) => setGemToGold(data)).finally(() => console.log("Updated"));
   }, []);
 
-
+  const [value, setValue] = useState(0);
+  const pages = ['Products', 'Pricing', 'Blog'];
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
   return (
-    <main className="flex items-center">
+    <Box className="items-center">
+      <AppBar position="static">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
       <AppRouterCacheProvider>
-        <DataGrid className="w-full h-full" rows={gemToGold} columns={columns} getRowId={i => i.uid}>
-        </DataGrid>
+        <Box>
+          <DataGrid className="h-full" rows={gemToGold} columns={columns} getRowId={i => i.uid}>
+          </DataGrid>
+
+        </Box>
       </AppRouterCacheProvider>
-    </main>
+
+    </Box>
   );
 }
