@@ -97,24 +97,24 @@ function dropGoldToGem() {
 
 function updateGoldToGem() {
     return sql.query(
-        `CREATE TABLE goldtogem AS (SELECT * FROM 
-            (SELECT DISTINCT ON (m.uid, m.tag1) 
-                m.tier, 
-                m.uid, 
-                m.tag1, 
-                m.goldPrice, 
-                r.gemsPrice, 
-                longname,
-                (m.goldPrice / r.gemsPrice )  AS ratio,
-                rank() over (partition by m.tier order by r.gemsPrice / m.goldPrice desc) rn,
-                t.value as displayname
-            FROM Market m
-            LEFT OUTER JOIN Market r ON m.uid = r.uid AND m.tag1 = r.tag1 AND r.tType = 'r' AND r.gemsPrice > 0
-            LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
-            LEFT OUTER JOIN typeinfos ON i.type = typeinfos.shortname
-            LEFT OUTER JOIN translation t ON CONCAT('item_type_', typeinfos.longname) = t.key
-            WHERE m.tType = 'o' AND m.goldPrice > 0 AND r.gemsPrice > 0
-            ) WHERE rn = 1 ORDER BY ratio);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
+        `CREATE TABLE SELECT * FROM 
+        (SELECT DISTINCT ON (m.uid, m.tag1) 
+            m.tier, 
+            m.uid, 
+            m.tag1, 
+            m.goldPrice, 
+            r.gemsPrice, 
+            longname,
+            (m.goldPrice / r.gemsPrice )  AS ratio,
+            rank() over (partition by m.tier order by m.goldPrice / r.gemsPrice ASC ) rn,
+            t.value as displayname
+        FROM Market m
+        LEFT OUTER JOIN Market r ON m.uid = r.uid AND m.tag1 = r.tag1 AND r.tType = 'r' AND r.gemsPrice > 0
+        LEFT OUTER JOIN iteminfo i ON m.uid = i.uid
+        LEFT OUTER JOIN typeinfos ON i.type = typeinfos.shortname
+        LEFT OUTER JOIN translation t ON CONCAT('item_type_', typeinfos.longname) = t.key
+        WHERE m.tType = 'o' AND m.goldPrice > 0 AND r.gemsPrice > 0
+        ) where rn <= 3 ORDER BY ratio);`).catch((error) => { console.log(`Error while upating gemtogold`); throw error; });
 }
 
 
