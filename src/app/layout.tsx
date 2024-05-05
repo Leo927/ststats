@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { GoldIcon, GemIcon } from "@/components/icons";
-import { Box } from '@mui/material';
 import "./globals.css";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}
-      </body>
+      <AppRouterCacheProvider>
+        <body className={inter.className}>{children}
+        </body>
+      </AppRouterCacheProvider>
     </html>
   );
 }
