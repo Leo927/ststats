@@ -33,12 +33,12 @@ export const revalidate = 0;
 const url = `${SMARTY_TITAN_URL}/api/item/last/all`;
 
 export async function GET(request: NextRequest) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', {
-            status: 401,
-        });
-    }
+    // const authHeader = request.headers.get('authorization');
+    // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    //     return new NextResponse('Unauthorized', {
+    //         status: 401,
+    //     });
+    // }
 
     try {
         return create_db()
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 }
 
 function dropGemToGold() {
-    return sql.query(`DROP table gemtogold;`).catch((error) => { console.log(`Error while dropping gemtogold`); throw error; });
+    return sql.query(`DROP table IF EXISTS gemtogold;`).catch((error) => { console.log(`Error while dropping gemtogold`); throw error; });
 }
 
 function fetchListingDatas(): Response | PromiseLike<Response> {
@@ -92,12 +92,12 @@ function updateGemToGold() {
 }
 
 function dropGoldToGem() {
-    return sql.query(`DROP table goldtogem;`).catch((error) => { console.log(`Error while dropping goldToGem`); throw error; });
+    return sql.query(`DROP table IF EXISTS goldtogem;`).catch((error) => { console.log(`Error while dropping goldToGem`); throw error; });
 }
 
 function updateGoldToGem() {
     return sql.query(
-        `CREATE TABLE SELECT * FROM 
+        `CREATE TABLE goldtogem AS (SELECT * FROM 
         (SELECT DISTINCT ON (m.uid, m.tag1) 
             m.tier, 
             m.uid, 
